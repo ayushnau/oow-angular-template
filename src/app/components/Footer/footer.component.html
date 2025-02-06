@@ -1,0 +1,286 @@
+<footer class="flex flex-col lg:px-14 sm:px-8 pt-2 sm:py-6 lg:pt-8 w-full bg-[var(--temp-sec-back)] text-white max-md:px-5 max-md:mt-10">
+  <div class="w-full">
+    <div class="flex max-sm:flex-col justify-between">
+      <!-- Legal Section -->
+      <div class="flex flex-col max-md:ml-0 w-full">
+        <div class="flex flex-col text-white max-md:mt-10">
+          <div class="flex justify-between max-sm:cursor-pointer" (click)="toggleLegalVisibility()">
+            <h3 class="text-base font-medium uppercase">Legal</h3>
+            <div class="max-sm:block hidden">
+              @if (isLegalVisible) {
+                <i class="fa-solid fa-angle-up h-4 w-4 text-white"></i>
+              } @else {
+                <i class="fa-solid fa-angle-down h-4 w-4 text-white"></i>
+              }
+            </div>
+          </div>
+
+          <nav [class.hidden]="!isLegalVisible && window.innerWidth < 640" class="flex flex-col mt-3 w-full text-sm gap-2 sm:block">
+            <div class="flex flex-col gap-2 w-fit">
+              @if (pages$ | async; as pages) {
+                @if (pages?.policies?.trim()?.length) {
+                  <a [routerLink]="'/policies'" class="hover:underline" (click)="scrollToTop()">
+                    Privacy Policy
+                  </a>
+                }
+                @if (pages?.condition?.trim()?.length) {
+                  <a [routerLink]="'/term_and_condition'" class="hover:underline" (click)="scrollToTop()">
+                    Terms and Conditions
+                  </a>
+                }
+                @if (pages?.refund?.trim()?.length) {
+                  <a [routerLink]="'/refund_policies'" class="hover:underline" (click)="scrollToTop()">
+                    Refund Policy
+                  </a>
+                }
+              }
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Information Section -->
+      <div class="flex flex-col ml-5 max-md:ml-0 w-full">
+        <div class="flex flex-col text-white whitespace-nowrap max-md:mt-10">
+          <div class="flex justify-between max-sm:cursor-pointer" (click)="toggleInformationVisibility()">
+            <h3 class="text-base font-medium uppercase">Information</h3>
+            <div class="max-sm:block hidden">
+              @if (isInformationVisible) {
+                <i class="fa-solid fa-angle-up h-4 w-4 text-white"></i>
+              } @else {
+                <i class="fa-solid fa-angle-down h-4 w-4 text-white"></i>
+              }
+            </div>
+          </div>
+
+          <nav [class.hidden]="!isInformationVisible && window.innerWidth < 640" class="flex flex-col mt-3 w-full text-sm gap-2 sm:block">
+            <div class="flex flex-col gap-2 w-fit">
+              @if (domainPages$ | async; as pages) {
+                @for (page of pages; track page._id) {
+                  <a [routerLink]="['/custom', page.title]" class="hover:underline" (click)="scrollToTop()">
+                    {{ page.title.replace('_', ' ') }}
+                  </a>
+                }
+              }
+            </div>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Contact Section -->
+      <div class="flex flex-col ml-5 max-md:ml-0 w-full">
+        <div class="flex flex-col text-white max-md:mt-10">
+          <div class="flex justify-between max-sm:cursor-pointer" (click)="toggleContactVisibility()">
+            <h3 class="text-base font-medium uppercase">Contact Us</h3>
+            <div class="max-sm:block hidden">
+              @if (isContactVisible) {
+                <i class="fa-solid fa-angle-up h-4 w-4 text-white"></i>
+              } @else {
+                <i class="fa-solid fa-angle-down h-4 w-4 text-white"></i>
+              }
+            </div>
+          </div>
+
+          @if (store$ | async; as store) {
+            <address [class.hidden]="!isContactVisible && window.innerWidth < 640" 
+                    class="flex flex-col mt-3 w-full text-sm max-w-[315px] not-italic sm:block">
+              <div class="flex flex-col gap-2">
+                @if (store.store_email?.value) {
+                  <div class="flex gap-3 items-center w-full whitespace-nowrap">
+                    <app-email-icon class="text-white" />
+                    <a [href]="'mailto:' + store.store_email.value" class="hover:underline">
+                      {{ store.store_email.value }}
+                    </a>
+                  </div>
+                }
+
+                @if (store.store_mobile?.value) {
+                  <div class="flex gap-4 items-start w-full">
+                    <app-phone-icon class="text-white" />
+                    <div class="flex flex-col gap-1">
+                      @for (number of store.store_mobile.value.split(','); track $index) {
+                        <a [href]="'tel:' + number.trim()" class="hover:underline">
+                          {{ store.country?.countryPhoneCode }} {{ number.trim() }}
+                        </a>
+                      }
+                    </div>
+                  </div>
+                }
+
+                @if (store.address_line || store.town?.name || store.state?.name || store.country?.name) {
+                  <div class="flex gap-4 items-start w-full">
+                    <app-location-icon class="text-white" />
+                    <span>
+                      {{ store.address_line }}, 
+                      {{ store.town?.name }}, 
+                      {{ store.state?.name }}, 
+                      {{ store.country?.name }}
+                    </span>
+                  </div>
+                }
+
+                @if (timing$ | async; as timing) {
+                  <div class="flex gap-4 items-start w-full">
+                    <app-clock-icon class="text-white" />
+                    <div class="flex flex-col w-36">
+                      @for (time of timing[todaysDay]; track $index) {
+                        <span>{{ time.from }} - {{ time.to }}</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            </address>
+          }
+        </div>
+      </div>
+
+      <!-- Social Media Section (Desktop) -->
+      <div class="hidden lg:flex flex-col lg:flex-1 ml-5 max-md:ml-0 w-full">
+        @if (social$ | async; as social) {
+          <div class="max-md:mt-10 min-w-[190px]">
+            <h3 class="text-base font-medium text-white uppercase">Social Media</h3>
+            <div class="flex gap-2 items-center mt-3 mb-2">
+              @if (social.Social?.facebook) {
+                <app-facebook-icon 
+                  class="text-white hover:text-blue-500 transition-all duration-200 cursor-pointer"
+                  (click)="handleRedirect(social.Social.facebook)"
+                />
+              }
+              @if (social.Social?.x) {
+                <app-twitter-x-icon 
+                  class="text-white hover:text-black transition-all duration-200 cursor-pointer"
+                  (click)="handleRedirect(social.Social.x)"
+                />
+              }
+              @if (social.Social?.instagram) {
+                <app-instagram-icon 
+                  class="text-white hover:text-pink-700 transition-all duration-200 cursor-pointer"
+                  (click)="handleRedirect(social.Social.instagram)"
+                />
+              }
+              @if (social.Social?.linkedin) {
+                <app-linkedin-icon 
+                  class="text-white hover:text-blue-400 transition-all duration-200 cursor-pointer"
+                  (click)="handleRedirect(social.Social.linkedin)"
+                />
+              }
+              @if (social.Social?.Youtube) {
+                <app-youtube-icon 
+                  class="text-white hover:text-red-700 transition-all duration-200 cursor-pointer"
+                  (click)="handleRedirect(social.Social.Youtube)"
+                />
+              }
+              @if (social.Social?.Pinterest) {
+                <app-pinterest-icon 
+                  class="text-white hover:text-[#e60023] transition-all duration-200 cursor-pointer"
+                  (click)="handleRedirect(social.Social.Pinterest)"
+                />
+              }
+            </div>
+
+            <!-- App Store Links -->
+            <div class="gap-2 flex flex-col">
+              @if (social.app?.ios) {
+                <div class="w-[180px] h-[50px]">
+                  <a [href]="social.app.ios" target="_blank" rel="noreferrer">
+                    <img loading="lazy"
+                         src="https://cdn.builder.io/api/v1/image/assets/TEMP/151516b1e6babec0399abe50d1d3a37c8a9cebc94959389037aac8e3ac2cdac3"
+                         class="w-full h-full"
+                         alt="App Store" />
+                  </a>
+                </div>
+              }
+              @if (social.app?.android) {
+                <div class="w-[180px] h-[50px]">
+                  <a [href]="social.app.android" target="_blank" rel="noreferrer">
+                    <img loading="lazy"
+                         src="https://cdn.builder.io/api/v1/image/assets/TEMP/088a4a254d91b3e63b8d554047e6c9a7586fb77c908dd34e2fa3bbf55db8596a"
+                         class="w-full h-full"
+                         alt="Google Play" />
+                  </a>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Social Media Section (Mobile) -->
+      <div class="block lg:hidden flex-col lg:flex-1 w-full py-9">
+        @if (social$ | async; as social) {
+          <h3 class="text-base font-medium text-white uppercase">Social Media</h3>
+          <div class="flex justify-between flex-wrap items-center gap-2">
+            <div class="flex flex-col w-full">
+              <div class="flex gap-2 items-center mt-3">
+                @if (social.Social?.facebook) {
+                  <app-facebook-icon 
+                    class="text-white hover:text-blue-500 transition-all duration-200 cursor-pointer"
+                    (click)="handleRedirect(social.Social.facebook)"
+                  />
+                }
+                @if (social.Social?.x) {
+                  <app-twitter-x-icon 
+                    class="text-white hover:text-black transition-all duration-200 cursor-pointer"
+                    (click)="handleRedirect(social.Social.x)"
+                  />
+                }
+                @if (social.Social?.instagram) {
+                  <app-instagram-icon 
+                    class="text-white hover:text-pink-700 transition-all duration-200 cursor-pointer"
+                    (click)="handleRedirect(social.Social.instagram)"
+                  />
+                }
+                @if (social.Social?.linkedin) {
+                  <app-linkedin-icon 
+                    class="text-white hover:text-blue-400 transition-all duration-200 cursor-pointer"
+                    (click)="handleRedirect(social.Social.linkedin)"
+                  />
+                }
+                @if (social.Social?.Youtube) {
+                  <app-youtube-icon 
+                    class="text-white hover:text-red-700 transition-all duration-200 cursor-pointer"
+                    (click)="handleRedirect(social.Social.Youtube)"
+                  />
+                }
+                @if (social.Social?.Pinterest) {
+                  <app-pinterest-icon 
+                    class="text-white hover:text-[#e60023] transition-all duration-200 cursor-pointer"
+                    (click)="handleRedirect(social.Social.Pinterest)"
+                  />
+                }
+              </div>
+            </div>
+            <!-- Mobile app store links -->
+            @if (social.app?.ios) {
+              <a [href]="social.app.ios" target="_blank" rel="noreferrer">
+                <img loading="lazy"
+                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/151516b1e6babec0399abe50d1d3a37c8a9cebc94959389037aac8e3ac2cdac3"
+                     class="w-[140px] sm:w-[150px] sm:h-[45px] rounded-xl"
+                     alt="App Store" />
+              </a>
+            }
+            @if (social.app?.android) {
+              <a [href]="social.app.android" target="_blank" rel="noreferrer">
+                <img loading="lazy"
+                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/088a4a254d91b3e63b8d554047e6c9a7586fb77c908dd34e2fa3bbf55db8596a"
+                     class="w-[140px] sm:w-[150px] sm:h-[45px] rounded-xl"
+                     alt="Google Play" />
+              </a>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Bottom -->
+  <div class="flex flex-wrap py-1 gap-5 items-center justify-center self-start text-center">
+    <div class="w-[90px] h-[72px]">
+      <app-logo [isHeader]="false"></app-logo>
+    </div>
+    <div class="self-stretch my-auto lg:text-[14px] sm:text-[12px] text-white">
+      Copyright © 2010-2024 All rights reserved.
+    </div>
+  </div>
+</footer> 

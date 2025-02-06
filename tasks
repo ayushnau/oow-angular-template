@@ -1,0 +1,42 @@
+login feature.
+ 1. setup the local storage user based on that.
+ 2. modal for login. 
+ 3. validation for login. 
+
+logout feature. 
+ 1. clear the store and local storage.
+
+Store setup. 
+ 1. on first load set up the store. in the local storage.
+
+ make the UI Exactly same as the template.
+
+show the Best Seller Items. 
+ 1. load the modal based on items. (complex one. )
+ 2. food info modal. 
+ 3. add to the favourite item + api for favourite ite. 
+
+cart feature
+  1. implement the api to save retrieve items to the cart. 
+  2. add the  modal for the cart. 
+  3. implement the api for the update note, quantity, and delete.
+
+
+Show the Footer. based on the store. 
+ 1. load the data from store here. 
+
+
+
+add all the validations. (not adding the validations for distance, minamount, etc.  as the delivery modal is not to be implemented.)
+1. normal normal validations. like name and email is there or not. 
+2. the address, payment type is selected or not. 
+
+Add the checkout page. (here will only show this not the Billing details.)
+ 1. customer details. 
+ 2. delivery address, pament type.
+
+
+Add the toast Ui and message.
+
+
+

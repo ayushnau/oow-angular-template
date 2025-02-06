@@ -1,0 +1,77 @@
+<div class="relative bg-white">
+  <nav class="flex overflow-hidden max-h-[60px] py-2 items-center px-4 justify-between shadow-sm">
+    <!-- Logo Section -->
+    <div class="flex gap-8 items-center">
+      <div class="py-2 w-[150px] h-[72px]">
+        <app-logo [isHeader]="true"></app-logo>
+      </div>
+      <div>
+      </div>
+    </div>
+
+    <!-- Right Side Navigation -->
+    <div class="flex items-center gap-2 md:gap-5 h-9 cursor-pointer">
+      <!-- Cart Button -->
+      <div class="relative">
+        @if (isUser()) {
+          <button 
+            (click)="toggleCartPopUp()" 
+            (mouseenter)="setHover(true)"
+            (mouseleave)="setHover(false)"
+            class="whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none 
+                   focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none 
+                   disabled:opacity-50 text-primary-foreground shadow h-10 rounded-md bg-white 
+                   hover:bg-[var(--temp-back)] border-2 border-[var(--temp-back)] px-4 
+                   flex items-center justify-center lg:static max-lg:fixed max-lg:bottom-10 
+                   max-lg:right-4 max-lg:z-50">
+            <div class="relative">
+              <app-cart-svg [isHovered]="isHover()"></app-cart-svg>
+              @if (cartCount() > 0) {
+                <div class="bg-[var(--temp-back)] rounded-full h-5 min-w-5 px-1 flex items-center 
+                            justify-center absolute -top-2 -right-2 text-white text-xs font-bold">
+                  {{ cartCount() }}
+                </div>
+              }
+            </div>
+          </button>
+        } @else {
+          <button 
+            (click)="toggleEmptyCart()"
+            (mouseenter)="setHover(true)"
+            (mouseleave)="setHover(false)"
+            class="whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none 
+                   focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none 
+                   disabled:opacity-50 text-primary-foreground shadow h-10 rounded-md bg-white 
+                   hover:bg-[var(--temp-back)] border-2 border-[var(--temp-back)] px-4 
+                   flex items-center justify-center lg:static max-lg:fixed max-lg:bottom-10 
+                   max-lg:right-4 max-lg:z-50">
+            <div class="relative">
+              <app-cart-svg [isHovered]="isHover()"></app-cart-svg>
+            </div>
+          </button>
+        }
+      </div>
+
+      <!-- Authentication -->
+      @if (!isUser()) {
+        <app-authentication [isHeader]="true"></app-authentication>
+      } @else {
+        <div class="flex items-center gap-2">
+          <div class="relative" (click)="toggleUserDropdown()">
+            <img 
+              src="assets/header/photo.png" 
+              alt="User Profile" 
+              class="cursor-pointer"
+            >
+          </div>
+          @if (showUserDropdown()) {
+            <div class="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-[0_2px_10px_rgba(0,0,0,0.1)] z-50">
+              <app-user-dropdown></app-user-dropdown>
+            </div>
+          }
+          <app-hammer-links></app-hammer-links>
+        </div>
+      }
+    </div>
+  </nav>
+</div> 
