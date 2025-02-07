@@ -13,6 +13,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ThemeService } from '../../services/theme.service';
 import { selectLogo, selectStoreName, selectThemeColors } from '../../store/slices/theme.slice';
 import { CartPopupService } from '../../services/cart-popup.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -33,6 +34,7 @@ export class HeaderComponent {
   private ngrxStore = inject(Store);
   private themeService = inject(ThemeService);
   cartPopupService = inject(CartPopupService);
+  cartService = inject(CartService);
 
   readonly social$ = this.themeService.getSocial();
   readonly storeName$ = this.ngrxStore.select(selectStoreName);
@@ -56,6 +58,13 @@ export class HeaderComponent {
   })
   // here update cartPopupService as close. 
   this.cartPopupService.close();
+  // this.cartService.cartCount$.subscribe(count => {
+  //   console.log({count});
+  // })
+  this.cartService.getCartCount().subscribe(count => {
+    console.log({count});
+  })
+  
 }
 
 

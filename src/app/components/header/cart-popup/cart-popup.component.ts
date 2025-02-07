@@ -9,12 +9,12 @@ import { firstValueFrom, Subscription, Subject, forkJoin } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CartPopupService } from '../../../services/cart-popup.service';
 import { CartItem } from '../../../interfaces/cart.interface';
-import { ItemNoteIconComponent, ItemDeleteIconComponent } from '../../../icons/cartpop-icons.component';
+import { ItemNoteIconComponent, ItemDeleteIconComponent, CartIconComponent } from '../../../icons/cartpop-icons.component';
 
 @Component({
   selector: 'app-cart-popup',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyPipe, ItemNoteIconComponent, ItemDeleteIconComponent],
+  imports: [CommonModule, FormsModule, CurrencyPipe, ItemNoteIconComponent, ItemDeleteIconComponent, CartIconComponent],
   templateUrl: './cart-popup.component.html',
 //   animations: [
 //     motion.animation([
@@ -82,7 +82,8 @@ export class CartPopupComponent implements OnInit, OnDestroy {
         forkJoin([
           this.cartService.getOrderNotes(this.storeId),
           this.cartService.getItemCart(this.storeId),
-          this.cartService.reloadCartItems()
+          this.cartService.reloadCartItems(),
+          this.cartService.getCartCount()
         ])
       );
 

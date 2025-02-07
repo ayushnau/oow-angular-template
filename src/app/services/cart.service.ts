@@ -145,6 +145,7 @@ export class CartService {
       headers: this.getHeaders()
     }).pipe(
       tap((response: any) => {
+        console.log(response.results,">>>>chekc the result ")
         this.cartCountSubject.next(response.results);
       })
     );

@@ -25,11 +25,12 @@
           (mouseleave)="setHover(false)">
           <div class="relative">
             <app-cart-svg [isHovered]="isHover()"></app-cart-svg>
-            @if (cartCount() > 0) {
-              <div class="bg-[var(--temp-back)] rounded-full h-5 min-w-5 px-1 flex items-center 
-                          justify-center absolute -top-2 -right-2 text-white text-xs font-bold">
-                {{ cartCount() }}
-              </div>
+            @if (cartService.cartCount$ | async; as count) {
+              @if (count > 0) {
+                <div class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full min-w-[18px] h-[18px] flex items-center justify-center text-xs font-medium">
+                  {{ count }}
+                </div>
+              }
             }
           </div>
         </button>
