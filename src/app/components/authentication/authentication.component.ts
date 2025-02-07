@@ -14,7 +14,7 @@ import { ComponentType } from '@angular/cdk/overlay';
   template: `
     @if (isHeader) {
       <button
-        (click)="openDialog()"
+        (click)="openDialog($event)"
         class="h-10 hover:text-white hover:bg-[var(--temp-back)] border-[var(--temp-back)] text-[var(--temp-back)] w-16 font-[600] border-2 rounded-lg"
       >
         Login
@@ -23,7 +23,7 @@ import { ComponentType } from '@angular/cdk/overlay';
       <i-io-md-add
         class="text-[var(--temp-back)] hover:text-white bg-white hover:bg-[var(--temp-back)] border border-[var(--temp-back)] p-1 rounded-full cursor-pointer"
         [size]="25"
-        (click)="openDialog()"
+        (click)="openDialog($event)"
       />
     }
   `
@@ -34,7 +34,7 @@ export class AuthenticationComponent {
 
   constructor(private dialog: Dialog) {}
 
-  openDialog() {
+  openDialog(event: Event) {
     this.currentPage = 0;
     const dialogRef = this.dialog.open(LoginPageComponent, {
       width: '425px',
@@ -44,6 +44,9 @@ export class AuthenticationComponent {
     dialogRef.closed.subscribe(() => {
       this.currentPage = 0;
     });
+
+    // prevent he bubbling the click event. 
+    event.stopPropagation();
   }
 
   private changePage(page: number) {

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, tap, BehaviorSubject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { AuthActions } from '../store/slices/auth.slice';
 
@@ -43,11 +43,17 @@ export interface AuthResponse {
 })
 export class AuthService {
   private readonly API_URL = 'https://themeonestaging.petpooja.com/api/auth';
+  private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
 
   constructor(
     private http: HttpClient,
     private store: Store
   ) {}
+
+  isAuthenticated(): boolean {
+    return this.isAuthenticatedSubject.value;
+  }
 
   login(countryCode: string, phone: string): Observable<any> {
     this.store.dispatch(AuthActions.setPhone({ phone, countryCode }));

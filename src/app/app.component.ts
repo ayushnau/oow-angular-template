@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { RestaurantComponent } from './RestaurantPage/restaurant.component';
 import { FooterComponent } from './components/Footer/footer.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ThemeService } from './services/theme.service';
@@ -9,7 +8,7 @@ import { ToastComponent } from './components/ui/toast/toast.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RestaurantComponent, HeaderComponent, FooterComponent, ToastComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, ToastComponent],
   template: `
     <app-header></app-header>
     <router-outlet></router-outlet>

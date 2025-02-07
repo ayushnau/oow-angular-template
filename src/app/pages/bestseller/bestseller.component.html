@@ -1,0 +1,28 @@
+<div class="px-4 sm:px-[32px] md:px-[32px] lg:px-12">
+  <div class="py-4 md:py-12">
+    <div class="w-full flex justify-between">
+      <h2 class="font-bold text-lg">Best Seller Items</h2>
+      <span 
+        class="flex items-center cursor-pointer gap-1 hover:text-[var(--temp-back)]"
+        (click)="navigateToMenu()">
+        View More 
+        <i class="fa-solid fa-angle-right"></i>
+      </span>
+    </div>
+
+    @if (isLoading) {
+      <div class="text-center py-8 text-gray-500">Loading...</div>
+    } @else {
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[16px] my-8 h-fit">
+        @for (item of bestProducts; track item._id) {
+          <app-food-card
+            [item]="item"
+            [isItemInCart]="isItemInCart(item)"
+            [itemFavorite]="favoriteItems.includes(item.item_id)"
+            [variation]="true">
+          </app-food-card>
+        }
+      </div>
+    }
+  </div>
+</div> 

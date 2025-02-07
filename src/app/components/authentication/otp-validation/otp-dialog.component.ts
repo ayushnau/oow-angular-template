@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit, ViewChildren, QueryList, ElementRef } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, ViewChildren, QueryList, ElementRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DIALOG_DATA, DialogRef, DialogModule } from '@angular/cdk/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -8,7 +8,7 @@ import { authFeature } from '../../../store/slices/auth.slice';
 import { AuthService } from '../../../services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ToastService } from '../../../services/toast.service';
-
+import { CartPopupService } from '../../../services/cart-popup.service';    
 @Component({
   selector: 'app-otp-dialog',
   standalone: true,
@@ -43,7 +43,8 @@ export class OtpDialogComponent implements OnDestroy, OnInit {
     @Inject(DIALOG_DATA) public data: { changePage: (page: number) => void },
     private authService: AuthService,
     private toast: ToastService,
-    private store: Store
+    private store: Store,
+    private cartPopupService: CartPopupService = inject(CartPopupService)
   ) {
     this.store.select(authFeature.selectAuthState)
       .pipe(takeUntil(this.destroy$))
@@ -155,6 +156,7 @@ export class OtpDialogComponent implements OnDestroy, OnInit {
           if (response.code === 201) {
             this.toast.success('Successfully logged in');
             this.dialogRef.close();
+            this.cartPopupService.close();
           }
         },
         error: (error) => {

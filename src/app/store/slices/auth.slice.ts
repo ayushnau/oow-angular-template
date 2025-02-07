@@ -37,7 +37,6 @@ export const authFeature = createFeature({
       isAuthenticated: true
     })),
     on(AuthActions.setPhone, (state, { phone, countryCode }) => {
-        alert("setPhone")
     console.log(phone,countryCode,"phone and countryCode")
       return {  ...state,
       phone,

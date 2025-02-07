@@ -5,13 +5,14 @@ import { CartSvgComponent } from '../cart-svg/cart-svg.component';
 import { AuthenticationComponent } from '../authentication/authentication.component';
 import { UserDropdownComponent } from '../user-dropdown/user-dropdown.component';
 import { HammerLinksComponent } from '../hammer-links/hammer-links.component';
-import { CartPopupComponent } from '../cart-popup/cart-popup.component';
+import { CartPopupComponent } from './cart-popup/cart-popup.component';
 import { EmptyCartComponent } from '../empty-cart/empty-cart.component';
 import { Store } from '@ngrx/store';
 import { CounterActions } from '../../store/slices/counter.slice';
 import { Dialog } from '@angular/cdk/dialog';
 import { ThemeService } from '../../services/theme.service';
 import { selectLogo, selectStoreName, selectThemeColors } from '../../store/slices/theme.slice';
+import { CartPopupService } from '../../services/cart-popup.service';
 
 @Component({
   selector: 'app-header',
@@ -31,6 +32,7 @@ import { selectLogo, selectStoreName, selectThemeColors } from '../../store/slic
 export class HeaderComponent {
   private ngrxStore = inject(Store);
   private themeService = inject(ThemeService);
+  cartPopupService = inject(CartPopupService);
 
   readonly social$ = this.themeService.getSocial();
   readonly storeName$ = this.ngrxStore.select(selectStoreName);
@@ -48,6 +50,13 @@ export class HeaderComponent {
   setHover(value: boolean) {
     this.isHover.set(value);
   }
+  constructor(){
+  this.showUserDropdown.update(value => {
+     return false;
+  })
+  // here update cartPopupService as close. 
+  this.cartPopupService.close();
+}
 
 
   toggleUserDropdown() {
@@ -59,7 +68,8 @@ export class HeaderComponent {
         document.body.style.overflow = 'auto';
       }
       return!value
-    });
+    }
+  );
     
     // If opening the dropdown, add a click listener to close it when clicking outside
     if (this.showUserDropdown()) {
