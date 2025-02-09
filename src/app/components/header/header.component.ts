@@ -1,12 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LogoComponent } from '../logo/logo.component';
-import { CartSvgComponent } from '../cart-svg/cart-svg.component';
+import { CartSvgComponent } from './cart-svg/cart-svg.component';
 import { AuthenticationComponent } from '../authentication/authentication.component';
-import { UserDropdownComponent } from '../user-dropdown/user-dropdown.component';
-import { HammerLinksComponent } from '../hammer-links/hammer-links.component';
+import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
+import { HammerLinksComponent } from './hammer-links/hammer-links.component';
 import { CartPopupComponent } from './cart-popup/cart-popup.component';
-import { EmptyCartComponent } from '../empty-cart/empty-cart.component';
+import { EmptyCartComponent } from './empty-cart/empty-cart.component';
 import { Store } from '@ngrx/store';
 import { CounterActions } from '../../store/slices/counter.slice';
 import { Dialog } from '@angular/cdk/dialog';
@@ -14,7 +14,7 @@ import { ThemeService } from '../../services/theme.service';
 import { selectLogo, selectStoreName, selectThemeColors } from '../../store/slices/theme.slice';
 import { CartPopupService } from '../../services/cart-popup.service';
 import { CartService } from '../../services/cart.service';
-
+import { MenuPopupComponent } from '../food/menu-popup/menu-popup.component';
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -26,7 +26,8 @@ import { CartService } from '../../services/cart.service';
     UserDropdownComponent,
     HammerLinksComponent,
     CartPopupComponent,
-    EmptyCartComponent
+    EmptyCartComponent,
+    MenuPopupComponent
   ],
   templateUrl: './header.component.html'
 })

@@ -45,7 +45,6 @@ export class CartPopupComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.themeService.getStore().subscribe(store => {
       if (store?.store_id) {
-        console.log({store}, store.store_id);
         this.storeId = store.store_id;
         this.loadCartData();
       }

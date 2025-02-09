@@ -1,7 +1,7 @@
 import { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: ['class'],
+  darkMode: 'class',
   mode: 'jit',
   content: [
     './src/**/*.{html,ts}',  // Updated for Angular

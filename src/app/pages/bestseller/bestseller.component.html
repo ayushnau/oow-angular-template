@@ -1,12 +1,14 @@
-<div class="px-4 sm:px-[32px] md:px-[32px] lg:px-12">
-  <div class="py-4 md:py-12">
-    <div class="w-full flex justify-between">
-      <h2 class="font-bold text-lg">Best Seller Items</h2>
+<div class="w-full">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center">
+      <h2 class="text-2xl font-semibold">Best Seller</h2>
       <span 
         class="flex items-center cursor-pointer gap-1 hover:text-[var(--temp-back)]"
         (click)="navigateToMenu()">
         View More 
-        <i class="fa-solid fa-angle-right"></i>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+        </svg>
       </span>
     </div>
 
@@ -14,13 +16,13 @@
       <div class="text-center py-8 text-gray-500">Loading...</div>
     } @else {
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-[16px] my-8 h-fit">
-        @for (item of bestProducts; track item._id) {
-          <app-food-card
-            [item]="item"
-            [isItemInCart]="isItemInCart(item)"
-            [itemFavorite]="favoriteItems.includes(item.item_id)"
-            [variation]="true">
-          </app-food-card>
+        @for (item of bestProducts; track item.item_id) {
+          <div class="overflow-hidden">
+            <app-food-card
+              [item]="item"
+              [itemFavorite]="false">
+            </app-food-card>
+          </div>
         }
       </div>
     }

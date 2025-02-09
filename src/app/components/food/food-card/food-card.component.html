@@ -1,85 +1,74 @@
-<div class="relative w-full h-full">
-  <div class="w-full h-full bg-white rounded-[10px] shadow-md">
-    <div class="relative w-full h-full">
-      <div class="w-full h-full">
-        <div class="relative w-full h-full">
-          <!-- Food Image -->
-          <div class="relative w-full h-[200px]">
-            <img 
-              [src]="item.item_image_url" 
-              [alt]="item.item_name"
-              class="w-full h-full object-cover rounded-t-[10px]"
-              onerror="this.src='assets/images/broken-image-menu.jpg'"
-            />
+<div (click)="showMenuPopUp()" class="overflow-hidden" style="opacity: 1; transform: none;">
+  <div class="py-2 h-full rounded-lg flex flex-col">
+    <div class="flex flex-col h-full">
+      <!-- Image -->
+      <img [src]="item.item_image_url" 
+           [alt]="item.item_name" 
+           class="aspect-[12/8] w-full object-cover rounded-t-xl cursor-pointer"
+           onerror="this.src='https://i.ibb.co/27bP0Yrh/broken-Image-Menu-CM38dt-NR.jpg'"
+        >
+
+      <div class="w-full px-3 flex flex-col flex-grow bg-white rounded-b-xl">
+        <!-- Header -->
+        <div class="grid grid-cols-[auto_1fr_auto] gap-2 my-2">
+          <div class="flex py-1">
+            <app-veg-icon></app-veg-icon>
+            <!-- <app-veg-icon [isVeg]="item.item_attribute_id === '1'"></app-veg-icon> -->
           </div>
+          <p class="text-[16px] font-[400] cursor-pointer">{{item.item_name}}</p>
+          <div>
+            <app-heart-icon [filled]="itemFavorite"></app-heart-icon>
+          </div>
+        </div>
 
-          <!-- Food Info -->
-          <div class="p-4">
-            <div class="flex justify-between items-start">
-              <div class="flex flex-col gap-2">
-                <h3 class="text-[16px] font-semibold">{{item.item_name}}</h3>
-                <div class="flex items-center gap-2">
-                  <!-- Price -->
-                  <p class="text-[14px]">
-                    {{item.price | currency:'INR'}}
-                  </p>
-                  <!-- Calories if available -->
-                  @if (item.nutrition) {
-                    <p class="text-[12px] text-gray-500">
-                      {{item.nutrition?.calories?.amount}} kcal
-                    </p>
-                  }
-                </div>
-              </div>
+        <!-- Description -->
+        <div class="flex-grow">
+          <p class="text-sm text-gray-600" *ngIf="item.item_description">
+            {{item.item_description}}
+          </p>
+        </div>
 
-              <!-- Heart Icon -->
-              <button 
-                class="p-2 hover:bg-gray-100 rounded-full"
-                (click)="$event.stopPropagation()">
-                <i class="fa-regular"
-                   [ngClass]="{
-                     'fa-heart': !itemFavorite,
-                     'fa-solid': itemFavorite,
-                     'text-red-500': itemFavorite
-                   }">
-                </i>
-              </button>
+        <!-- Footer -->
+        <div class="mt-2">
+          <div class="flex justify-between items-end">
+            <div>
+              <p class="flex items-center text-[14px] font-[550]">
+                <span class="font-[550] pr-[2px]">INR</span> 
+                {{basePrice}}
+              </p>
+              <p class="text-[var(--temp-back)] text-[11px] cursor-pointer" 
+                 *ngIf="hasVariations || hasAddons">
+                Customisation Available
+              </p>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="flex justify-between mt-4">
-              <button 
-                class="px-4 py-2 text-sm bg-gray-100 rounded-md hover:bg-gray-200"
-                (click)="showFoodInfo(item._id)">
-                Info
-              </button>
-              <button 
-                class="px-4 py-2 text-sm bg-primary text-white rounded-md hover:bg-primary-dark"
-                (click)="showMenuPopup(item._id)">
-                Add to Cart
-              </button>
+            <!-- Quantity Controls -->
+            <div class="flex justify-end items-center gap-2">
+              <app-minus-icon></app-minus-icon>
+              <span class="text-lg">1</span>
+              <app-plus-icon></app-plus-icon>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Popups -->
-  @if (isShowFoodPopUp === item._id) {
-    <app-food-info-popup
-      [item]="item"
-      (close)="closePopup()">
-    </app-food-info-popup>
-  }
+<!-- Popups -->
+@if (isShowFoodPopUp === item._id) {
+  <app-food-info-popup
+    [item]="item"
+    (close)="closePopup()">
+  </app-food-info-popup>
+}
 
-  @if (isShowMenuPopUp === item._id) {
-    <app-menu-popup
-      [item]="item"
-      [itemFavorite]="itemFavorite"
-      (close)="closePopup()"
-      (setFavoriteItems)="setFavoriteItems($event)"
-      (onVariationSelect)="handleVariationSelect($event)">
-    </app-menu-popup>
-  }
-</div> 
+@if (isShowMenuPopUp === item._id) {
+  <app-menu-popup
+    [item]="item"
+    [itemFavorite]="itemFavorite"
+    (close)="closePopup()"
+    (setFavoriteItems)="setFavoriteItems($event)"
+    (onVariationSelect)="handleVariationSelect($event)">
+  </app-menu-popup>
+} 

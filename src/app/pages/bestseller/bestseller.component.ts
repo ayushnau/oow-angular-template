@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Store } from '@ngrx/store';
 import { MenuService } from '../../services/menu.service';
@@ -7,6 +7,8 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FoodCardComponent } from '../../components/food/food-card/food-card.component';
 import { Subscription } from 'rxjs';
+import { ThemeService } from '../../services/theme.service';
+import { FoodItem } from '../../interfaces/food.interface';
 
 @Component({
   selector: 'app-bestseller',
@@ -20,13 +22,15 @@ export class BestsellerComponent implements OnInit, OnDestroy {
   private cartService = inject(CartService);
   private authService = inject(AuthService);
   private store = inject(Store);
-  private router = inject(Router);
+  private themeService = inject(ThemeService);
   private subscriptions = new Subscription();
 
-  bestProducts: any[] = [];
-  isLoading = false;
+  bestProducts: FoodItem[] = [];
+  isLoading = true;
   favoriteItems: string[] = [];
   cartItems: any[] = [];
+
+  constructor(private router: Router) {}
 
   ngOnInit() {
     console.log('BestsellerComponent initialized');
@@ -43,34 +47,26 @@ export class BestsellerComponent implements OnInit, OnDestroy {
     console.log('Loading best products...');
     
     this.subscriptions.add(
-      this.store.select((state: any) => {
-        console.log('Current state:', state); // Debug current state
-        return state.themes?.store?.menusharingcode;
-      })
-      .subscribe({
-        next: (code) => {
-          console.log('Menu sharing code:', code);
-          if (!code) {
-            console.warn('No menu sharing code available');
+      this.themeService.getStore().subscribe({
+        next: (store) => {
+          if (!store?.menusharingcode) {
             this.isLoading = false;
             return;
           }
           
-          this.menuService.getBestProducts(code).subscribe({
-            next: (response: any) => {
-              console.log('Best products response:', response);
-              this.bestProducts = response.results;
-              this.isLoading = false;
-            },
-            error: (error) => {
-              console.error('Error loading best products:', error);
-              this.isLoading = false;
-            }
-          });
-        },
-        error: (error) => {
-          console.error('Error getting menu sharing code:', error);
-          this.isLoading = false;
+          this.subscriptions.add(
+            this.menuService.getBestProducts(store.menusharingcode).subscribe({
+              next: (response: any) => {
+                console.log('Best products response:', response);
+                this.bestProducts = response.results;
+                this.isLoading = false;
+              },
+              error: (error) => {
+                console.error('Error loading best products:', error);
+                this.isLoading = false;
+              }
+            })
+          );
         }
       })
     );
