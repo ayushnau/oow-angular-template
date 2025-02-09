@@ -90,7 +90,6 @@ export class FoodCardComponent implements OnInit {
         .map(v => parseFloat(v.price))
         .filter(p => !isNaN(p));
 
-        console.log(this.item, {prices},">>>>>>>>>>>>>>>>>")
       this.displayPrice = prices.length > 0 ? Math.min(...prices).toString() : '0';
     }
   }

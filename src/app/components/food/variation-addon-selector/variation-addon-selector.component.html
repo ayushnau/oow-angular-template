@@ -27,7 +27,7 @@
 
   <!-- Variation Addons Section -->
   <div *ngIf="selectedVariation?.variationallowaddon === 1">
-    <div *ngFor="let addonGroup of getVariationAddons(selectedVariation)" class="rounded-[10px] border-2 mb-4 border-2 border-[hsl(var(--border))]">
+    <div *ngFor="let addonGroup of getVariationAddons(selectedVariation)" class="rounded-[10px] border-2 mb-4 border-[hsl(var(--border))]">
       <div class="flex item-center flex-col border-b-2 py-[1%] px-4 border-[hsl(var(--border))]">
         <div class="flex justify-between items-center cursor-pointer">
           <p>{{addonGroup.addon_group_name}}</p>
@@ -48,7 +48,7 @@
       </div>
       <div class="px-[16px] py-[1px] max-h-[20vh] custom-scrollbar overflow-y-auto">
         <div *ngFor="let item of addonGroup.addon_group_items" 
-             class="flex justify-between relative items-center mb-1 ">
+             class="flex justify-between relative items-center mb-1">
           <div class="flex items-center">
             <input type="checkbox" 
                    [id]="'addon-' + addonGroup.addon_group_id + '-' + item.addonitemid"
@@ -66,5 +66,11 @@
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Validation Message -->
+  <div *ngIf="validationService.currentMessage | async as message" 
+       class="text-red-500 mt-2 px-4">
+    {{ message }}
   </div>
 </div> 

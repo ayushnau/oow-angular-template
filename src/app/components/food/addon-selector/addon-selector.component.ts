@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FoodItem, AddonDetail } from '../../../interfaces/food.interface';
+import { ValidationService } from '../../../services/validation.service';
 
 @Component({
   selector: 'app-addon-selector',
@@ -11,8 +12,11 @@ import { FoodItem, AddonDetail } from '../../../interfaces/food.interface';
 export class AddonSelectorComponent {
   @Input() item!: FoodItem;
   @Output() priceUpdated = new EventEmitter<void>();
+  @Output() addonSelected = new EventEmitter<{groupId: string, itemId: string}>();
   
   selectedAddons: { [key: string]: string[] } = {};
+
+  constructor(private validationService: ValidationService) {}
 
   getAddonGroups(): AddonDetail[] {
     if (!this.item.addon || !this.item.addonDetails) return [];
@@ -32,23 +36,33 @@ export class AddonSelectorComponent {
   }
 
   onAddonSelect(addonGroup: AddonDetail, addonItemId: string) {
-    if (!this.selectedAddons[addonGroup.addon_group_id]) {
-      this.selectedAddons[addonGroup.addon_group_id] = [];
+    const groupId = addonGroup.addon_group_id;
+    if (!this.selectedAddons[groupId]) {
+      this.selectedAddons[groupId] = [];
     }
 
-    const currentSelections = this.selectedAddons[addonGroup.addon_group_id];
-    const maxLimit = this.getAddonMaxLimit(addonGroup);
-
-    if (currentSelections.includes(addonItemId)) {
-      this.selectedAddons[addonGroup.addon_group_id] = currentSelections.filter(id => id !== addonItemId);
-    } else if (currentSelections.length < maxLimit) {
-      this.selectedAddons[addonGroup.addon_group_id].push(addonItemId);
+    const index = this.selectedAddons[groupId].indexOf(addonItemId);
+    if (index === -1) {
+      if (this.selectedAddons[groupId].length < this.getAddonMaxLimit(addonGroup)) {
+        this.selectedAddons[groupId].push(addonItemId);
+      } else {
+        this.validationService.updateMessage(`You can select maximum ${this.getAddonMaxLimit(addonGroup)} option(s) from ${addonGroup.addon_group_name}`);
+        return;
+      }
+    } else {
+      this.selectedAddons[groupId].splice(index, 1);
     }
 
+    this.validationService.clearMessage();
+    this.addonSelected.emit({groupId, itemId: addonItemId});
     this.priceUpdated.emit();
   }
 
   isAddonSelected(addonGroup: AddonDetail, addonItemId: string): boolean {
     return this.selectedAddons[addonGroup.addon_group_id]?.includes(addonItemId) || false;
+  }
+
+  validateSelections(): boolean {
+    return this.validationService.validateAddonSelections(this.getAddonGroups(), this.selectedAddons);
   }
 } 

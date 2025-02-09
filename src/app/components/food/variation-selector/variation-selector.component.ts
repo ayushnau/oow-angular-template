@@ -1,6 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FoodItem, Variation } from '../../../interfaces/food.interface';
+import { ValidationService } from '../../../services/validation.service';
 
 @Component({
   selector: 'app-variation-selector',
@@ -14,6 +15,8 @@ export class VariationSelectorComponent implements OnInit {
   @Output() variationSelected = new EventEmitter<Variation>();
   
   uniqueVariations: Variation[] = [];
+
+  constructor(private validationService: ValidationService) {}
 
   ngOnInit() {
     this.initializeVariations();
@@ -33,6 +36,11 @@ export class VariationSelectorComponent implements OnInit {
 
   onSelect(variation: Variation) {
     this.selectedVariation = variation;
+    this.validationService.clearMessage();
     this.variationSelected.emit(variation);
+  }
+
+  validateSelection(): boolean {
+    return this.validationService.validateVariationSelection(this.selectedVariation);
   }
 } 

@@ -1,21 +1,3 @@
-// export interface NutritionDetail {
-//   unit: string;
-//   amount: number;
-// }
-
-// export interface Nutrition {
-//   protien: NutritionDetail;
-//   calories: NutritionDetail;
-//   totalFat: NutritionDetail;
-//   carbohydrate: NutritionDetail;
-//   fiber?: NutritionDetail;
-//   sodium?: NutritionDetail;
-//   transFat?: NutritionDetail;
-//   addedSugar?: NutritionDetail;
-//   cholesterol?: NutritionDetail;
-//   saturatedFat?: NutritionDetail;
-// }
-
 export interface Nutrition {
   [key: string]: {
     unit: string;
@@ -30,6 +12,35 @@ export interface VariationAddon {
   _id: string;
 }
 
+export interface AddonItem {
+  _id: string;
+  addonitemid: string;
+  addonitem_name: string;
+  addonitem_price: string;
+  active: string;
+  attributes: string;
+  addonitem_rank: string;
+}
+
+export interface AddonGroup {
+  _id: string;
+  addon_group_id: string;
+  addon_group_name: string;
+  addon_group_rank: string;
+  addon_group_items: AddonItem[];
+  menu_sharing_code: string;
+  store_id: string;
+  active: string;
+  variation_ids?: string[];
+}
+
+export interface AddonSelection {
+  _id: string;
+  addon_group_id: string;
+  addon_item_selection_min: string;
+  addon_item_selection_max: string;
+}
+
 export interface Variation {
   id: string;
   variationid: string;
@@ -40,7 +51,7 @@ export interface Variation {
   item_packingcharges: string;
   variationrank: string;
   variationallowaddon: number;
-  addon?: VariationAddon;
+  addon?: AddonSelection;
   _id: string;
 }
 
@@ -65,13 +76,6 @@ export interface AddonDetail {
   __v: number;
   active: string;
   variation_ids?: string[];
-}
-
-export interface Addon {
-  _id: string;
-  addon_group_id: string;
-  addon_item_selection_max: string;
-  addon_item_selection_min: string;
 }
 
 export interface FoodItem {
