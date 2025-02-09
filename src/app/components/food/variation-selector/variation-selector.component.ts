@@ -45,7 +45,7 @@ import { FoodItem, Nutrition } from '../../../interfaces/food.interface';
             
             <!-- Calories -->
             <p class="text-[14px] text-[#748BA0] font-[400] cursor-pointer">
-              {{nutrition?.calories?.amount || 0}} kcal - {{nutrition?.protien?.amount || 0}}g
+              {{nutrition?.["calories"]?.amount || 0}} kcal - {{nutrition?.["protien"]?.amount || 0}}g
             </p>
             
             <!-- Price -->

@@ -32,11 +32,13 @@ export class MenuPopupComponent implements OnInit {
   price: string = '';
   total_price: string = '';
   parsedNutrition: Nutrition | null = null;
+  uniqueVariations: Variation[] = [];
 
   ngOnInit() {
     this.determineItemType();
     if (this.item) {
       this.initializeItemDetails();
+      this.initializeVariations();
     }
   }
 
@@ -73,6 +75,22 @@ export class MenuPopupComponent implements OnInit {
     } else if (this.item.nutrition) {
       this.parsedNutrition = this.item.nutrition;
       this.nutrition = `${this.parsedNutrition?.["calories"]?.amount} ${this.parsedNutrition?.["calories"]?.unit} - ${this.parsedNutrition?.["protien"]?.amount}${this.parsedNutrition?.["protien"]?.unit}`;
+    }
+  }
+
+  private initializeVariations() {
+    if (this.item?.variation) {
+      // Get unique variations based on variationid
+      this.uniqueVariations = Array.from(
+        new Map(
+          this.item.variation.map(item => [item.variationid, item])
+        ).values()
+      );
+
+      // Auto-select the first variation
+      if (this.uniqueVariations.length > 0) {
+        this.onVariationSelect(this.uniqueVariations[0]);
+      }
     }
   }
 
