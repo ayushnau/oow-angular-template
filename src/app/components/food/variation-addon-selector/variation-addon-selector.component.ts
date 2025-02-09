@@ -16,10 +16,12 @@ export class VariationAddonSelectorComponent implements OnInit, OnChanges {
   @Output() variationSelected = new EventEmitter<Variation>();
   @Output() addonSelected = new EventEmitter<{groupId: string, itemId: string}>();
   @Output() validationChanged = new EventEmitter<boolean>();
+  @Output() priceUpdated = new EventEmitter<number>();
   
   uniqueVariations: Variation[] = [];
   public selectedAddons: { [key: string]: string[] } = {};
   disabledDetails: { [key: string]: { currentSelectedCount: number, disabled: boolean } } = {};
+  totalPrice: number = 0;
 
   constructor(public validationService: ValidationService) {}
 
@@ -40,13 +42,19 @@ export class VariationAddonSelectorComponent implements OnInit, OnChanges {
 
   private initializeVariations() {
     if (this.item?.variation) {
-      this.uniqueVariations = Array.from(
-        new Map(this.item.variation.map(item => [item.variationid, item])).values()
-      );
-      
-      if (this.uniqueVariations.length > 0 && !this.selectedVariation) {
+      // Group variations by variationid to get unique variations
+      const variationMap = new Map();
+      this.item.variation.forEach(variation => {
+        if (!variationMap.has(variation.variationid)) {
+          variationMap.set(variation.variationid, variation);
+        }
+      });
+      this.uniqueVariations = Array.from(variationMap.values());
+
+      // Select first variation by default if there's only one
+      // if (this.uniqueVariations.length === 1) {
         this.onSelect(this.uniqueVariations[0]);
-      }
+      // }
     }
   }
 
@@ -54,6 +62,7 @@ export class VariationAddonSelectorComponent implements OnInit, OnChanges {
     this.selectedVariation = variation;
     this.variationSelected.emit(variation);
     this.selectedAddons = {}; // Reset addons when variation changes
+    this.calculateTotalPrice();
     this.validateSelections();
   }
 
@@ -99,6 +108,7 @@ export class VariationAddonSelectorComponent implements OnInit, OnChanges {
       this.selectedAddons[addonGroup.addon_group_id].push(addonItemId);
     }
 
+    this.calculateTotalPrice();
     this.validateSelections();
   }
 
@@ -180,5 +190,34 @@ export class VariationAddonSelectorComponent implements OnInit, OnChanges {
     
     // const currentCount = this.selectedAddons[groupId]?.length || 0;
     // return currentCount >= parseInt(addonConfig.addon_item_selection_max);
+  }
+
+  private calculateTotalPrice() {
+    let total = 0;
+
+    // Add variation price
+    if (this.selectedVariation) {
+      total += parseFloat(this.selectedVariation.price);
+    }
+
+    // Add addon prices
+    Object.entries(this.selectedAddons).forEach(([groupId, selectedIds]) => {
+      const addonGroup = this.item.variationAddonDetails?.find(
+        group => group.addon_group_id === groupId
+      );
+
+      if (addonGroup) {
+        selectedIds.forEach(addonId => {
+          const addonItem = addonGroup.addon_group_items.find(
+            item => item.addonitemid === addonId
+          );
+          if (addonItem) {
+            total += parseFloat(addonItem.addonitem_price);
+          }
+        });
+      }
+    });
+
+    this.priceUpdated.emit(total);
   }
 } 

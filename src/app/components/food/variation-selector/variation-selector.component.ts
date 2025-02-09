@@ -13,6 +13,7 @@ export class VariationSelectorComponent implements OnInit {
   @Input() item!: FoodItem;
   @Input() selectedVariation: Variation | null = null;
   @Output() variationSelected = new EventEmitter<Variation>();
+  @Output() priceUpdated = new EventEmitter<number>();
   
   uniqueVariations: Variation[] = [];
 
@@ -38,6 +39,7 @@ export class VariationSelectorComponent implements OnInit {
     this.selectedVariation = variation;
     this.validationService.clearMessage();
     this.variationSelected.emit(variation);
+    this.priceUpdated.emit(parseFloat(variation.price));
   }
 
   validateSelection(): boolean {

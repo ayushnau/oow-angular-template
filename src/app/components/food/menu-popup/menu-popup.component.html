@@ -72,16 +72,14 @@
       <app-variation-selector
         *ngIf="hasOnlyVariations()"
         [item]="item"
-        [selectedVariation]="selectedVariation"
-        (variationSelected)="onVariationSelect($event)">
+        (priceUpdated)="onPriceUpdated($event)">
       </app-variation-selector>
 
       <!-- Variations with Addons -->
       <app-variation-addon-selector
         *ngIf="hasVariationsWithAddons()"
         [item]="item"
-        [selectedVariation]="selectedVariation"
-        (variationSelected)="onVariationSelect($event)">
+        (priceUpdated)="onPriceUpdated($event)">
       </app-variation-addon-selector>
 
       <!-- Only Addons -->
@@ -94,8 +92,8 @@
 
     <!-- Footer Section -->
     <div class="border-t-2 border-[hsl(var(--border))] lg:rounded-b-[10px] items-center flex justify-between py-[8px] sm:px-[24px] px-4">
-      <div class="sm:text-[20px] text-[16px] flex items-center">
-        <div class="font-[550] pr-[2px]">INR</div>{{total_price}}
+      <div class="price-display">
+        <div class="font-[550] pr-[2px]">INR {{totalPrice}} </div>
       </div>
       <button class="sm:px-[20%] lg:px-4 px-4 flex gap-2 py-[2%] items-center text-white rounded-[10px] text-[16px] font-bold bg-[var(--temp-back)]">
         <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em">
@@ -104,6 +102,8 @@
         Add to Cart
       </button>
     </div>
+
+   
   </div>
 </div> 
 

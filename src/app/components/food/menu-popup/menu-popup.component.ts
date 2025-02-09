@@ -97,7 +97,7 @@ export class MenuPopupComponent implements OnInit {
   }
 
   private initializePrice() {
-    this.totalPrice = Number(this.item.price) || 0;
+    this.totalPrice = parseFloat(this.item.price) || 0;
   }
 
   calculateTotalPrice(): number {
@@ -139,8 +139,9 @@ export class MenuPopupComponent implements OnInit {
   }
 
   private updateTotalPrice() {
-    // Add logic to calculate total price based on selections
-    this.total_price = this.price;
+    if (this.selectedVariation) {
+      this.totalPrice = parseFloat(this.selectedVariation.price) || 0;
+    }
   }
 
   getAddonSelectionMin(addonGroupId: string): string {
@@ -206,5 +207,18 @@ export class MenuPopupComponent implements OnInit {
     return (!this.item?.variation || this.item.variation.length === 0) && 
            this.item?.addon && 
            this.item.addon.length > 0;
+  }
+
+
+  private hasVariations(): boolean {
+    return this.item.variation?.length > 0;
+  }
+
+  onTotalPriceChanged(newTotal: number) {
+    this.totalPrice = newTotal;
+  }
+
+  onPriceUpdated(price: number) {
+    this.totalPrice = price;
   }
 } 
