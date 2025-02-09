@@ -1,0 +1,41 @@
+<div class="mx-[3.8%] mb-2">
+  <div *ngFor="let addonGroup of getAddonGroups()" class="rounded-[10px] border-2 mb-4">
+    <div class="flex item-center flex-col border-b-2 py-[1%] px-4">
+      <div class="flex justify-between items-center cursor-pointer">
+        <p>{{addonGroup.addon_group_name}}</p>
+        <div class="flex items-center gap-4">
+          <p class="text-gray-500 text-sm">
+            ({{selectedAddons[addonGroup.addon_group_id]?.length || 0}}/{{getAddonMaxLimit(addonGroup)}})
+          </p>
+          <p>
+            <svg width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M0.599927 6.99625C0.866626 7.26791 1.29903 7.26791 1.56573 6.99625L5.9999 2.47945L10.4341 6.99625C10.7008 7.26791 11.1332 7.26791 11.3999 6.99625C11.6666 6.72458 11.6666 6.28411 11.3999 6.01244L6.4828 1.00375C6.21611 0.732079 5.7837 0.732079 5.517 1.00375L0.599927 6.01244C0.333227 6.28411 0.333227 6.72458 0.599927 6.99625Z" fill="#0C1D2E"/>
+            </svg>
+          </p>
+        </div>
+      </div>
+      <div *ngIf="getAddonMinLimit(addonGroup) > 0" class="text-xs text-gray-500 flex items-end justify-end">
+        Select at least {{getAddonMinLimit(addonGroup)}} option
+      </div>
+    </div>
+    <div class="px-[16px] py-[1px] max-h-[20vh] custom-scrollbar overflow-y-auto">
+      <div *ngFor="let item of addonGroup.addon_group_items" 
+           class="flex justify-between relative items-center mb-1">
+        <div class="flex items-center">
+          <input type="checkbox" 
+                 [id]="'addon-' + addonGroup.addon_group_id + '-' + item.addonitemid"
+                 [checked]="isAddonSelected(addonGroup, item.addonitemid)"
+                 (click)="onAddonSelect(addonGroup, item.addonitemid)"
+                 class="mr-2">
+          <label [for]="'addon-' + addonGroup.addon_group_id + '-' + item.addonitemid" 
+                 class="cursor-pointer">
+            {{item.addonitem_name}}
+          </label>
+        </div>
+        <div class="text-gray-500 flex items-center">
+          <div class="font-[550] pr-[2px]">INR</div>{{item.addonitem_price}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

@@ -33,12 +33,14 @@ export class MenuPopupComponent implements OnInit {
   total_price: string = '';
   parsedNutrition: Nutrition | null = null;
   uniqueVariations: Variation[] = [];
+  totalPrice: number = 0;
 
   ngOnInit() {
     this.determineItemType();
     if (this.item) {
       this.initializeItemDetails();
       this.initializeVariations();
+      this.initializePrice();
     }
   }
 
@@ -92,6 +94,10 @@ export class MenuPopupComponent implements OnInit {
         this.onVariationSelect(this.uniqueVariations[0]);
       }
     }
+  }
+
+  private initializePrice() {
+    this.totalPrice = Number(this.item.price) || 0;
   }
 
   calculateTotalPrice(): number {
@@ -183,5 +189,22 @@ export class MenuPopupComponent implements OnInit {
       const addon = this.item.addon?.find(a => a.addon_group_id === addonGroup.addon_group_id);
       return addon?.addon_item_selection_min ? Number(addon.addon_item_selection_min) : 0;
     }
+  }
+
+  hasOnlyVariations(): boolean {
+    return this.item?.variation?.length > 0 && 
+           (!this.item?.variationAddonDetails || this.item.variationAddonDetails.length === 0);
+  }
+
+  hasVariationsWithAddons(): boolean {
+    return this.item?.variation?.length > 0 && 
+           this.item?.variationAddonDetails && 
+           this.item.variationAddonDetails.length > 0;
+  }
+
+  hasOnlyAddons(): boolean {
+    return (!this.item?.variation || this.item.variation.length === 0) && 
+           this.item?.addon && 
+           this.item.addon.length > 0;
   }
 } 

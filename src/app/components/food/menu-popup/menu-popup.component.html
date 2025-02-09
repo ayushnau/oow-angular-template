@@ -68,88 +68,28 @@
         </div>
       </div>
 
-      <!-- Variations Section -->
-      <div *ngIf="uniqueVariations.length > 0" class="mx-[3.8%] mb-2">
-        <div class="rounded-[10px] border-2 border-[hsl(var(--border))] mb-2">
-          <div class="flex justify-between items-center border-b-2 border-[hsl(var(--border))] py-[1%] cursor-pointer">
-            <p class="px-[16px]">Variation</p>
-            <p class="px-[16px]">
-              <svg width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M0.599927 6.99625C0.866626 7.26791 1.29903 7.26791 1.56573 6.99625L5.9999 2.47945L10.4341 6.99625C10.7008 7.26791 11.1332 7.26791 11.3999 6.99625C11.6666 6.72458 11.6666 6.28411 11.3999 6.01244L6.4828 1.00375C6.21611 0.732079 5.7837 0.732079 5.517 1.00375L0.599927 6.01244C0.333227 6.28411 0.333227 6.72458 0.599927 6.99625Z" fill="#0C1D2E"/>
-              </svg>
-            </p>
-          </div>
-          <div class="overflow-y-auto max-h-[150px] px-[16px]">
-            <div *ngFor="let variation of uniqueVariations" class="flex justify-between items-center py-1">
-              <span class="cursor-pointer" [class.text-[var(--temp-back)]]="variation === selectedVariation">
-                <input type="radio" 
-                       [checked]="variation === selectedVariation"
-                       (click)="onVariationSelect(variation)" 
-                       class="mr-2">
-                {{variation.name}}
-              </span>
-              <span class="text-gray-500 flex items-center">
-                <div class="font-[550] pr-[2px]">INR</div>{{variation.price}}
-              </span>
-            </div>
-          </div>
-        </div>
+      <!-- Variations Only -->
+      <app-variation-selector
+        *ngIf="hasOnlyVariations()"
+        [item]="item"
+        [selectedVariation]="selectedVariation"
+        (variationSelected)="onVariationSelect($event)">
+      </app-variation-selector>
 
-        <!-- Variation Addons -->
-        <div  *ngIf="selectedVariation?.variationallowaddon === 1 && item.variationAddonDetails && item.variationAddonDetails.length > 0">
-          <div *ngFor="let addonGroup of getVariationAddons(selectedVariation); let i = index" 
-               class="rounded-[10px] border-2 mb-4 border-[hsl(var(--border))]">
-            <div class="flex item-center flex-col border-b-2 border-[hsl(var(--border))] py-[1%] px-4">
-              <div class="flex justify-between items-center cursor-pointer">
-                <p>{{addonGroup.addon_group_name}}</p>
-                <div class="flex items-center gap-4">
-                  <p class="text-gray-500 text-sm">
-                    ({{getSelectedCount(addonGroup)}}/{{getAddonMaxLimit(addonGroup, selectedVariation)}})
-                  </p>
-                  <p>
-                    <svg width="12" height="8" viewBox="0 0 12 8" xmlns="http://www.w3.org/2000/svg">
-                      <path fill-rule="evenodd" clip-rule="evenodd" d="M0.599927 6.99625C0.866626 7.26791 1.29903 7.26791 1.56573 6.99625L5.9999 2.47945L10.4341 6.99625C10.7008 7.26791 11.1332 7.26791 11.3999 6.99625C11.6666 6.72458 11.6666 6.28411 11.3999 6.01244L6.4828 1.00375C6.21611 0.732079 5.7837 0.732079 5.517 1.00375L0.599927 6.01244C0.333227 6.28411 0.333227 6.72458 0.599927 6.99625Z" fill="#0C1D2E"/>
-                    </svg>
-                  </p>
-                </div>
-              </div>
-              <div *ngIf="getAddonMinLimit(addonGroup, selectedVariation) > 0" 
-                   class="text-xs text-gray-500 flex items-end justify-end">
-                Select at least {{getAddonMinLimit(addonGroup, selectedVariation)}} option
-              </div>
-            </div>
-            <div class="px-[16px] py-[1px] max-h-[20vh] custom-scrollbar overflow-y-auto">
-              <div *ngFor="let item of addonGroup.addon_group_items; let j = index"
-                   class="flex justify-between relative items-center mb-1">
-                <div class="flex items-center">
-                  <input type="checkbox" 
-                         [id]="'addon-'+i+'-'+j"
-                         [disabled]="item.active === '0'"
-                         class="mr-2">
-                  <label [for]="'addon-'+i+'-'+j" 
-                         class="cursor-pointer"
-                         [class.line-through]="item.active === '0'"
-                         [class.text-gray-300]="item.active === '0'">
-                    {{item.addonitem_name}}
-                  </label>
-                </div>
-                <div *ngIf="item.active === '0'" class="absolute w-full h-[1px] bg-gray-300"></div>
-                <div [class.text-gray-300]="item.active === '0'" class="flex items-center">
-                  <div class="font-[550] pr-[2px]">INR</div>{{item.addonitem_price}}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Variations with Addons -->
+      <app-variation-addon-selector
+        *ngIf="hasVariationsWithAddons()"
+        [item]="item"
+        [selectedVariation]="selectedVariation"
+        (variationSelected)="onVariationSelect($event)">
+      </app-variation-addon-selector>
 
-      <!-- Regular Addons Section (when no variations) -->
-      <div *ngIf="(!item?.variation || item.variation.length === 0) && item?.addon && item.addon.length > 0" class="mx-[3.8%] mb-2">
-        <div *ngFor="let addonGroup of getRegularAddons(); let i = index" class="rounded-[10px] border-2 mb-4">
-          <!-- Similar addon group structure as above -->
-          <!-- ... -->
-        </div>
-      </div>
+      <!-- Only Addons -->
+      <!-- <app-addon-selector
+        *ngIf="hasOnlyAddons()"
+        [item]="item"
+        (priceUpdated)="updateTotalPrice()">
+      </app-addon-selector> -->
     </div>
 
     <!-- Footer Section -->
