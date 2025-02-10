@@ -142,8 +142,14 @@ export class FoodCardComponent implements OnInit {
     });
   }
 
-  incrementQuantity(event: Event) {
-    event.stopPropagation();   
+  incrementQuantity(event: Event, flag: boolean) {
+    if(!flag){
+      event.stopPropagation();   
+    }
+ 
+    if(flag){
+      return;
+    }
 
     this.cartService.getCartItems().subscribe(cartItemsincrementQuantity => {
       const cartItem = cartItemsincrementQuantity.results.find((cartItemincrementQuantity: any) => 

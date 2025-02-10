@@ -43,11 +43,17 @@
             </div>
 
             <!-- Quantity Controls -->
-            <div class="flex justify-end items-center gap-2">
-              <app-minus-icon (click)="decrementQuantity($event)"></app-minus-icon>
-              <span class="text-lg">{{quantity}}</span>
-              <app-plus-icon (click)="incrementQuantity($event)"></app-plus-icon>
-            </div>
+            <ng-container *ngIf="quantity === 0; else quantityControls">
+              <app-plus-icon (click)="incrementQuantity($event, true)"></app-plus-icon>
+            </ng-container>
+            
+            <ng-template #quantityControls>
+              <div class="flex justify-end items-center gap-2">
+                <app-minus-icon (click)="decrementQuantity($event)"></app-minus-icon>
+                <span class="text-lg">{{ quantity }}</span>
+                <app-plus-icon (click)="incrementQuantity($event, false)"></app-plus-icon>
+              </div>
+            </ng-template>
           </div>
         </div>
 
