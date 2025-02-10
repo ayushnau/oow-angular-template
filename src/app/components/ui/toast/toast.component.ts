@@ -18,14 +18,14 @@ import { animate, style, transition, trigger } from '@angular/animations';
           aria-atomic="true" 
           tabindex="0" 
           data-state="open"
-          class="group pointer-events-auto relative flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md p-4 pr-6 shadow-lg transition-all border bg-background text-foreground
+          class="group pointer-events-auto relative bg-white flex w-full items-center justify-between space-x-2 overflow-hidden rounded-md p-4 pr-6 shadow-lg transition-all border bg-background text-foreground
                  data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-80 
                  data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full 
                  data-[state=open]:sm:slide-in-from-bottom-full"
           [class.bg-destructive]="toast.type === 'error'"
           @toastAnimation
         >
-          <div class="grid gap-1">
+          <div class="grid gap-1 bg-white">
             @if (toast.type === 'success') {
               <div class="text-sm font-semibold [&+div]:text-xs">Success</div>
             } @else if (toast.type === 'error') {

@@ -10,6 +10,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { CartPopupService } from '../../../services/cart-popup.service';
 import { CartItem } from '../../../interfaces/cart.interface';
 import { ItemNoteIconComponent, ItemDeleteIconComponent, CartIconComponent } from '../../../icons/cartpop-icons.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart-popup',
@@ -28,6 +29,7 @@ export class CartPopupComponent implements OnInit, OnDestroy {
   themeService = inject(ThemeService);
   private store = inject(Store);
   cartPopupService = inject(CartPopupService);
+  router = inject(Router);
 
   items: CartItem[] = [];
   orderNotes = '';
@@ -73,6 +75,12 @@ export class CartPopupComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
+  async handleCheckout() {
+    // also close the cart popup
+    this.cartPopupService.close();
+    this.router.navigate(['/checkout']);
+  }
+  
   async loadCartData() {
     this.loading = true;
     try {

@@ -3,9 +3,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 import { CartResponse, OrderNotesResponse } from '../interfaces/cart.interface';
-import { BehaviorSubject, Subject, switchMap } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject, switchMap, tap } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 import { ThemeService } from './theme.service';
+import { AddonGroupItem, FoodItem } from '../interfaces/food.interface';
+import { ToastService } from './toast.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +15,7 @@ import { ThemeService } from './theme.service';
 export class CartService {
   private http = inject(HttpClient);
   private themeService = inject(ThemeService);
+  private toast = inject(ToastService);
   private baseUrl = environment.API_URL;
   
   private notesSubject = new Subject<{itemId: string, notes: string}>();
@@ -37,6 +40,43 @@ export class CartService {
     });
   }
 
+  // Add to cart sequence
+  addToCart(item: FoodItem, variation: string = '', addons: AddonGroupItem[] = [], notes: string = '') {
+    const payload = {
+      storeId: this.storeId,
+      item_id: item.item_id,
+      variation: variation,
+      quantity: 1,
+      addons: addons,
+      notes: notes
+    };
+
+    return this.http.post(`${this.baseUrl}/user/add_item_to_cart`, payload, {
+      headers: this.getHeaders()
+    }).pipe(
+      switchMap(() => this.getCartItems()),
+      tap(() => this.getCartCount().subscribe()),
+      tap(() => this.toast.success('Item added to cart'))
+    );
+  }
+
+  // Update quantity sequence
+  updateQuantity(cartProductId: string, quantity: number): Observable<any> {
+    const payload = {
+      storeId: this.storeId,
+      cartProductId,
+      quantity
+    };
+
+    return this.http.patch(`${this.baseUrl}/user/change_product_quantity`, payload, {
+      headers: this.getHeaders()
+    }).pipe(
+      // switchMap(() => this.getCartItems()),
+      // tap(() => this.getCartCount().subscribe())
+      tap(() => this.refreshCartData()),
+      tap(() => this.toast.success('Quantity updated'))
+    );
+  }
 
   getItemCart(storeId: string): Observable<CartResponse> {
     return this.http.get<CartResponse>(`${this.baseUrl}/user/get_item_cart/${storeId}`, {
@@ -69,18 +109,6 @@ export class CartService {
     });
   }
 
-  updateQuantity(cartProductId: string, quantity: number): Observable<any> {
-    return this.http.patch(`${this.baseUrl}/user/change_product_quantity`, {
-      storeId: this.storeId,
-      cartProductId,
-      quantity 
-    }, {
-      headers: this.getHeaders()
-    }).pipe(
-      tap(() => this.refreshCartData())
-    );
-  }
-
   addNotesToItem(data: { storeId: string; item_id: string; notes: string }): Observable<any> {
     return this.http.post(`${this.baseUrl}/user/add_notes_to_item`, data, {
       headers: this.getHeaders()
@@ -107,7 +135,8 @@ export class CartService {
       },
       headers: this.getHeaders()
     }).pipe(
-      tap(() => this.refreshCartData())
+      tap(() => this.refreshCartData()),
+      tap(() => this.toast.success('Item removed from cart'))
     );
   }
 

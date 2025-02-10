@@ -36,6 +36,7 @@ export class BestsellerComponent implements OnInit, OnDestroy {
     console.log('BestsellerComponent initialized');
     this.loadBestProducts();
     this.setupSubscriptions();
+    this.cartService.getCartItems().subscribe();
   }
 
   ngOnDestroy() {

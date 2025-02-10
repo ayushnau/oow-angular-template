@@ -5,7 +5,8 @@ import { FoodItem, Nutrition, Variation, AddonGroupItem, AddonDetail, VariationA
 import { VariationSelectorComponent } from '../variation-selector/variation-selector.component';
 import { VariationAddonSelectorComponent } from '../variation-addon-selector/variation-addon-selector.component';
 import { AddonSelectorComponent } from '../addon-selector/addon-selector.component';
-
+import { CartService } from '../../../services/cart.service';
+import { ToastService } from '../../../services/toast.service';
 @Component({
   selector: 'app-menu-popup',
   standalone: true,
@@ -23,7 +24,7 @@ export class MenuPopupComponent implements OnInit {
   selectedVariation: Variation | null = null;
   selectedAddons: { [key: string]: AddonGroupItem[] } = {};
   notes: string = '';
-  quantity: number = 1;
+  quantity: number = 0;
   showTextarea: boolean = false;
   item_name: string = '';
   variation_name: string = '';
@@ -35,6 +36,15 @@ export class MenuPopupComponent implements OnInit {
   uniqueVariations: Variation[] = [];
   totalPrice: number = 0;
 
+  constructor(private cartService: CartService, private toast: ToastService) {
+    this.cartService.cartItems$.subscribe(cartItems => {
+      const cartItem = cartItems.find(cartItem => 
+        cartItem.item_id === this.item.item_id
+      );
+      this.quantity = cartItem ? cartItem.quantity : 0;
+    });
+  }
+
   ngOnInit() {
     this.determineItemType();
     if (this.item) {
@@ -42,6 +52,7 @@ export class MenuPopupComponent implements OnInit {
       this.initializeVariations();
       this.initializePrice();
     }
+    this.updateQuantity();
   }
 
   private determineItemType() {
@@ -117,18 +128,20 @@ export class MenuPopupComponent implements OnInit {
     return total * this.quantity;
   }
 
-  handleAddToCart(): void {
-    const cartItem = {
-      item: this.item,
-      quantity: this.quantity,
-      notes: this.notes,
-      variation: this.selectedVariation,
-      addons: this.selectedAddons,
-      totalPrice: this.calculateTotalPrice()
-    };
+  handleAddToCart(event: Event): void {
+    event.stopPropagation();
 
-    this.addToCart.emit(cartItem);
-    this.close.emit();
+    const variation = this.selectedVariation?.id || '';
+    const addons = Object.values(this.selectedAddons).flat();
+    this.cartService.addToCart(
+      this.item,
+      variation,
+      addons
+    ).subscribe();
+
+    // this.addToCart.emit(cartItem);
+    // this.close.emit();
+
   }
 
   onVariationSelect(variation: Variation): void {
@@ -209,7 +222,6 @@ export class MenuPopupComponent implements OnInit {
            this.item.addon.length > 0;
   }
 
-
   private hasVariations(): boolean {
     return this.item.variation?.length > 0;
   }
@@ -220,5 +232,44 @@ export class MenuPopupComponent implements OnInit {
 
   onPriceUpdated(price: number) {
     this.totalPrice = price;
+  }
+
+  updateQuantity() {
+    this.cartService.cartItems$.subscribe(cartItems => {
+      const cartItem = cartItems.find(cartItem => 
+        cartItem.item_id === this.item.item_id
+      );
+      this.quantity = cartItem ? cartItem.quantity : 0;
+    });
+  }
+
+  
+  incrementQuantity(event: Event) {
+    event.stopPropagation();   
+
+    this.cartService.getCartItems().subscribe(cartItemsincrementQuantity => {
+      const cartItem = cartItemsincrementQuantity.results.find((cartItemincrementQuantity: any) => 
+         cartItemincrementQuantity.items_details._id === this.item._id
+      );
+      if(!cartItem){
+        this.toast.error('item not found in cart')
+      }
+      this.cartService.updateQuantity(cartItem?._id, this.quantity + 1).subscribe();
+    });
+  }
+
+  decrementQuantity(event: Event) {
+    event.stopPropagation();
+    if (this.quantity > 0) {
+      this.cartService.getCartItems().subscribe(cartItemsdecrementQuantity => {
+        const cartItem = cartItemsdecrementQuantity.results.find((cartItemsdecrementQuantity: any) => 
+           cartItemsdecrementQuantity.items_details._id === this.item._id
+        );
+        if(!cartItem){
+          this.toast.error('item not found in cart')
+        }
+        this.cartService.updateQuantity(cartItem?._id, this.quantity - 1).subscribe();
+      });
+    }
   }
 } 

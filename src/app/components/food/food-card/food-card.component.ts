@@ -5,6 +5,8 @@ import { HeartIconComponent, VegIconComponent, InfoArrowIconComponent, MinusIcon
 import { MenuPopupComponent } from '../menu-popup/menu-popup.component';
 import { FoodInfoPopupComponent } from '../food-info-popup/food-info-popup.component';
 import { VariationAddonSelectorComponent } from '../variation-addon-selector/variation-addon-selector.component';
+import { CartService } from '../../../services/cart.service';
+import { ToastService } from '../../../services/toast.service';
 @Component({
   selector: 'app-food-card',
   standalone: true,
@@ -38,9 +40,17 @@ export class FoodCardComponent implements OnInit {
   hasAddons: boolean = false;
   basePrice: string = '0';
   nutrition: any;
+  quantity: number = 0;
+
+  constructor(private cartService: CartService, private toast: ToastService) {}
 
   ngOnInit() {
     this.initializeComponent();
+    this.updateQuantity();
+    // Subscribe to cart changes
+    this.cartService.cartItems$.subscribe(() => {
+      this.updateQuantity();
+    });
   }
 
   private initializeComponent() {
@@ -122,4 +132,46 @@ export class FoodCardComponent implements OnInit {
   setFavoriteItems(event: any) {
     console.log('Favorite items:', event);
   }
+
+  updateQuantity() {
+    this.cartService.cartItems$.subscribe(cartItems => {
+      const cartItem = cartItems.find(cartItem => 
+        cartItem.item_id === this.item.item_id
+      );
+      this.quantity = cartItem ? cartItem.quantity : 0;
+    });
+  }
+
+  incrementQuantity(event: Event) {
+    event.stopPropagation();   
+
+    this.cartService.getCartItems().subscribe(cartItemsincrementQuantity => {
+      const cartItem = cartItemsincrementQuantity.results.find((cartItemincrementQuantity: any) => 
+         cartItemincrementQuantity.items_details._id === this.item._id
+      );
+      if(!cartItem){
+        this.toast.error('item not found in cart')
+      }
+      this.cartService.updateQuantity(cartItem?._id, this.quantity + 1).subscribe();
+    });
+  }
+
+  decrementQuantity(event: Event) {
+    event.stopPropagation();
+    if (this.quantity > 0) {
+      this.cartService.getCartItems().subscribe(cartItemsdecrementQuantity => {
+        const cartItem = cartItemsdecrementQuantity.results.find((cartItemsdecrementQuantity: any) => 
+           cartItemsdecrementQuantity.items_details._id === this.item._id
+        );
+        if(!cartItem){
+          this.toast.error('item not found in cart')
+        }
+        this.cartService.updateQuantity(cartItem?._id, this.quantity - 1).subscribe();
+      });
+    }
+  }
 } 
+
+
+// fix the logic for the quantity control 
+// show the basic checkout page. 
