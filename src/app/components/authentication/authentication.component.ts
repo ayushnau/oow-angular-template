@@ -4,7 +4,6 @@ import { Dialog, DialogModule } from '@angular/cdk/dialog';
 import { IoMdAddComponent } from '../../icons/io-md-add.component';
 import { LoginPageComponent } from './login/login.component';
 import { OtpDialogComponent } from './otp-validation/otp-dialog.component';
-import { SuccessPageComponent } from './success-page/success-page.component';
 import { ComponentType } from '@angular/cdk/overlay';
 
 @Component({
@@ -57,9 +56,6 @@ export class AuthenticationComponent {
     switch (page) {
       case 1:
         component = OtpDialogComponent;
-        break;
-      case 2:
-        component = SuccessPageComponent;
         break;
       default:
         component = LoginPageComponent;

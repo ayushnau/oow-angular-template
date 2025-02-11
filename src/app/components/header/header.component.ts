@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LogoComponent } from '../logo/logo.component';
-import { CartSvgComponent } from './cart-svg/cart-svg.component';
+import { CartSvgComponent } from '../../icons/cart-svg/cart-svg.component';
 import { AuthenticationComponent } from '../authentication/authentication.component';
 import { UserDropdownComponent } from './user-dropdown/user-dropdown.component';
 import { HammerLinksComponent } from './hammer-links/hammer-links.component';
