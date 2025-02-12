@@ -94,7 +94,7 @@ while (queue.length > 0) {
 
 // Add shell commands
 output += `<boltAction type="shell">\nnpm i\n</boltAction>\n\n`;
-output += `<boltAction type="shell">\nnpm run dev\n</boltAction>\n\n`;
+output += `<boltAction type="shell">\nnpm run start\n</boltAction>\n\n`;
 
 // Close the boltArtifact tag
 output += `</boltArtifact>`;
