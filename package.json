@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "generate": "node generate-file-content.js"
   },
   "private": true,
   "dependencies": {
@@ -23,6 +24,7 @@
     "@ngrx/store": "^19.0.1",
     "@ngrx/store-devtools": "^19.0.1",
     "@tailwindcss/postcss": "^4.0.3",
+    "fs": "^0.0.1-security",
     "mobx": "^6.13.6",
     "ngx-toastr": "^19.0.0",
     "postcss": "^8.5.1",
